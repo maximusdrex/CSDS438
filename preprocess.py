@@ -16,21 +16,25 @@ def get_train_list():
     return train_list
 
 train_list = get_train_list()
+count = 0
 if(train_list):
     for pair in train_list:
-        print(pair)
         # Change the path to the processed path and change the file extension to .pt
         t_path = processed_path + pair["train"].split('/')[-1][0:-4] + ".pt"
         gt_path = processed_path + pair["truth"].split('/')[-1][0:-4] + ".pt"
         if not os.path.isfile(t_path):
+            count += 1
             print("test")
             with rawpy.imread(pair["train"]) as raw:
                 rgb = raw.postprocess()
             torch.save(torch.tensor(rgb), t_path)
         if not os.path.isfile(gt_path):
+            count += 1
             with rawpy.imread(pair["truth"]) as raw:
                 rgb = raw.postprocess()
             torch.save(torch.tensor(rgb), gt_path)
+
+print("preprocessed {} files".format(count))
 
 #with rawpy.imread('long/00001_00_10s.RAF') as raw:
 #    rgb = raw.postprocess()
